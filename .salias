@@ -1,8 +1,8 @@
 clear
 set -gx ENV_NAME '.venv'
-set -gx APP_NAME '/home/dev/work/media/get1stVideoFrame/extract_frames.py'
-set -gx IN_DIR '/home/dev/work/media/get1stVideoFrame/input'
-set -gx OUT_DIR '/home/dev/work/media/get1stVideoFrame/output'
+set -gx APP_NAME (pwd)'/extract_frames.py'
+set -gx IN_DIR (pwd)'/input'
+set -gx OUT_DIR (pwd)'/output'
 alias pip='uv pip'
 alias rmenv='rmd $ENV_NAME .envrc; exit'
 alias mkenv='mkuv $ENV_NAME 3.12.10'

@@ -1,97 +1,161 @@
-# get1stVideoFrame
+# Extract Video First Frame
 
-A Python utility that automatically extracts the first frame from video files in a specified directory. This tool is useful for creating thumbnails or previews from a collection of videos.
+A Python utility that extracts the first frame from video files in a directory and saves them as PNG images. This tool is useful for creating thumbnails or previews from a collection of videos.
 
 ## Features
 
-- 🎥 Supports multiple video formats (MP4, AVI, MOV, MKV, WMV, FLV)
-- 📦 Automatic dependency installation
-- 🚀 Progress bar visualization
-- 📝 Comprehensive logging
-- ⚡ Batch processing capabilities
-- 🔒 Input validation and error handling
+- 🎥 Supports multiple video formats (MP4, AVI, MOV, MKV, WebM)
+- 🔄 Recursive directory scanning
+- ⚡ Uses ffmpeg for robust video processing
 - 📊 Processing summary statistics
+- 🔒 Error handling and validation
+- 📁 Separate output directory for organized frame storage
 
 ## Prerequisites
 
 - Python 3.6 or higher
-- Pip (Python package installer)
+- ffmpeg (must be installed on your system)
 
-The script will automatically install the required dependencies if they're not present:
-- OpenCV (cv2)
-- tqdm (for progress bars)
+### Installing ffmpeg
+
+**Linux (Debian/Ubuntu):**
+```bash
+sudo apt update
+sudo apt install ffmpeg
+```
+
+**Linux (Arch/Garuda):**
+```bash
+sudo pacman -S ffmpeg
+```
+
+**macOS:**
+```bash
+brew install ffmpeg
+```
+
+**Windows:**
+Download from [ffmpeg.org](https://ffmpeg.org/download.html) or use:
+```bash
+winget install ffmpeg
+```
 
 ## Installation
 
 1. Clone the repository:
 ```bash
-git clone https://github.com/yourusername/get1stVideoFrame.git
-cd get1stVideoFrame
+git clone https://github.com/yourusername/Extract_Video_First_Frame.git
+cd Extract_Video_First_Frame
 ```
 
-2. (Optional) Create and activate a virtual environment:
+2. (Optional but recommended) Create and activate a virtual environment:
 ```bash
-python -m venv venv
+python -m venv .venv
+
 # On Windows
-venv\Scripts\activate
+.venv\Scripts\activate
+
 # On macOS/Linux
-source venv/bin/activate
+source .venv/bin/activate
 ```
 
-3. Install dependencies:
+3. Install Python dependencies:
 ```bash
 pip install -r requirements.txt
 ```
 
 ## Usage
 
-### Command Line
+### Basic Command
 
-Run the script by providing the directory path as an argument:
 ```bash
-python get1stVideoFrame.py /path/to/video/directory
+python extract_frames.py <input_dir> <output_dir>
 ```
 
-### Interactive Mode
+### Examples
 
-Run the script without arguments to enter interactive mode:
+Extract frames from videos in `videos/` directory and save to `frames/`:
 ```bash
-python get1stVideoFrame.py
+python extract_frames.py videos/ frames/
 ```
-You'll be prompted to enter the directory path.
 
-### Output
-
-The script will:
-1. Scan the specified directory for video files
-2. Extract the first frame from each video
-3. Save frames as PNG files with "_first_frame" suffix
-4. Display progress and provide a summary of the operation
-
-Example output structure:
+Using absolute paths:
+```bash
+python extract_frames.py /path/to/videos /path/to/output
 ```
-video_directory/
-├── video1.mp4
-├── video1_first_frame.png
-├── video2.avi
-├── video2_first_frame.png
-└── ...
+
+### What It Does
+
+1. Recursively scans the input directory for video files
+2. Extracts the first frame from each video using ffmpeg
+3. Saves frames as high-quality PNG files in the output directory
+4. Names output files using the video's filename (e.g., `video.mp4` → `video.png`)
+5. Provides a summary of successful and failed extractions
+
+### Example Output
+
 ```
+Found 5 video files.
+✓ Saved frame to output/video1.png
+✓ Saved frame to output/video2.png
+✗ Failed to extract frame from corrupted_video.mp4
+  Error: Invalid data found when processing input
+✓ Saved frame to output/video3.png
+✓ Saved frame to output/video4.png
+
+============================================================
+Summary: 4/5 frames extracted successfully
+Failed files (1):
+  - corrupted_video.mp4
+```
+
+## Supported Video Formats
+
+- MP4 (`.mp4`)
+- AVI (`.avi`)
+- MOV (`.mov`)
+- MKV (`.mkv`)
+- WebM (`.webm`)
 
 ## Error Handling
 
-The script includes comprehensive error handling for common issues:
-- Invalid directory paths
-- Inaccessible directories
+The script handles common issues gracefully:
+- Missing or invalid directories
 - Corrupted video files
-- Missing dependencies
+- Unsupported video encodings
+- Missing ffmpeg installation
 - Insufficient permissions
 
-All errors are logged with appropriate messages to help troubleshoot issues.
+All errors are reported with descriptive messages to help troubleshoot issues.
+
+## Project Structure
+
+```
+Extract_Video_First_Frame/
+├── extract_frames.py      # Main script
+├── requirements.txt       # Python dependencies
+├── README.md             # This file
+├── input/                # Default input directory (optional)
+└── output/               # Default output directory (optional)
+```
+
+## Troubleshooting
+
+**"ffmpeg: command not found"**
+- Install ffmpeg using the instructions in the Prerequisites section
+
+**No video files found**
+- Check that your input directory contains videos with supported extensions
+- Verify the path to your input directory is correct
+
+**Failed to extract frame**
+- The video file may be corrupted
+- The video codec may not be supported by ffmpeg
+- Try re-encoding the video with a standard codec
 
 ## Contributing
 
-Contributions are welcome! Please feel free to submit a Pull Request. For major changes, please open an issue first to discuss what you would like to change.
+Contributions are welcome! Please feel free to submit a Pull Request.
 
 1. Fork the repository
 2. Create your feature branch (`git checkout -b feature/AmazingFeature`)
@@ -99,30 +163,16 @@ Contributions are welcome! Please feel free to submit a Pull Request. For major 
 4. Push to the branch (`git push origin feature/AmazingFeature`)
 5. Open a Pull Request
 
+## License
+
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+
+This means you are free to use, modify, and distribute this software for personal or commercial purposes, with attribution.
+
 ## Support
 
-If you encounter any issues or have questions, please:
-1. Check the existing issues in the GitHub repository
-2. Create a new issue with a detailed description of your problem
-3. Include any relevant error messages and your environment details
-
-## Project Status
-
-This project is actively maintained. Feel free to create issues for bugs or feature requests.
-
-## Requirements.txt
-
-Create a `requirements.txt` file in your project directory with the following content:
-```
-opencv-python>=4.5.0
-tqdm>=4.65.0
-```
-
-## Changelog
-
-### [1.0.0] - 2024-02-17
-- Initial release
-- Basic frame extraction functionality
-- Automatic dependency installation
-- Progress bar implementation
-- Error handling and logging
+If you encounter any issues or have questions:
+1. Check the Troubleshooting section above
+2. Review existing issues in the GitHub repository
+3. Create a new issue with a detailed description of your problem
+4. Include any error messages and your environment details (OS, Python version, ffmpeg version)
