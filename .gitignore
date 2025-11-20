@@ -1,0 +1,7 @@
+*.mp4:
+CLAUDE.md
+.envrc
+/input
+/output
+/.venv
+

@@ -1,0 +1,24 @@
+clear
+set -gx ENV_NAME '.venv'
+set -gx APP_NAME '/home/dev/work/media/get1stVideoFrame/extract_frames.py'
+set -gx IN_DIR '/home/dev/work/media/get1stVideoFrame/input'
+set -gx OUT_DIR '/home/dev/work/media/get1stVideoFrame/output'
+alias pip='uv pip'
+alias rmenv='rmd $ENV_NAME .envrc; exit'
+alias mkenv='mkuv $ENV_NAME 3.12.10'
+
+# Run first frame generator
+function run
+   clear
+   rmd $OUT_DIR
+   mkdir -p $OUT_DIR
+   cd $OUT_DIR
+   uv run $APP_NAME $IN_DIR $OUT_DIR
+end
+
+# Function to perform minimal install of comfy
+function install
+   clear
+   uv pip install pip
+   uv pip install -r requirements.txt
+end
