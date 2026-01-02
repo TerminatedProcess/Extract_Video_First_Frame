@@ -1,6 +1,9 @@
 import argparse
+import os
+import shutil
 import subprocess
 import sys
+import tempfile
 from pathlib import Path
 
 def extract_frames(input_dir, output_dir):
@@ -29,9 +32,21 @@ def extract_frames(input_dir, output_dir):
     failed_files = []
 
     for video_file in sorted(video_files):
+        temp_file = None
         try:
             # Construct output filename
             output_filename = output_path / f"{video_file.stem}.png"
+
+            # skip if filename already exists.
+            if output_filename.exists():
+                print(f"✓ Saved frame to {output_filename}")
+                success_count += 1
+                continue #loop
+
+            # Create a temporary file in /tmp for atomic write
+            # Using mkstemp to get a file descriptor we can close before ffmpeg writes
+            temp_fd, temp_file = tempfile.mkstemp(suffix='.png', prefix='ffmpeg_', dir='/tmp')
+            os.close(temp_fd)  # Close fd so ffmpeg can write to it
 
             # Use ffmpeg to extract the first frame
             # -i: input file
@@ -45,7 +60,7 @@ def extract_frames(input_dir, output_dir):
                 '-q:v', '2',
                 '-update', '1',
                 '-y',  # Overwrite output file
-                str(output_filename)
+                temp_file  # Write to temp file instead of final destination
             ]
 
             # Run ffmpeg with suppressed output (unless there's an error)
@@ -56,7 +71,10 @@ def extract_frames(input_dir, output_dir):
                 text=True
             )
 
-            if result.returncode == 0 and output_filename.exists():
+            if result.returncode == 0 and os.path.exists(temp_file):
+                # Atomic move: temp file → final destination
+                shutil.move(temp_file, str(output_filename))
+                temp_file = None  # Successfully moved, no cleanup needed
                 print(f"✓ Saved frame to {output_filename}")
                 success_count += 1
             else:
@@ -73,6 +91,13 @@ def extract_frames(input_dir, output_dir):
         except Exception as e:
             print(f"✗ Error processing {video_file}: {e}")
             failed_files.append(video_file.name)
+        finally:
+            # Clean up temp file if it still exists (error case or interruption)
+            if temp_file and os.path.exists(temp_file):
+                try:
+                    os.unlink(temp_file)
+                except Exception:
+                    pass  # Best effort cleanup
 
     # Print summary
     print(f"\n{'='*60}")
