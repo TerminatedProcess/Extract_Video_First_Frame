@@ -2,7 +2,8 @@ clear
 set -gx ENV_NAME '.venv'
 set -gx APP_NAME (pwd)'/extract_frames.py'
 set -gx IN_DIR /home/dev/wall/wallvids
-set -gx OUT_DIR /home/dev/wall/wallframes
+set -gx OUT_DIR /home/dev/wall/wallfirstframe
+
 # (pwd)'/output'
 alias pip='uv pip'
 alias rmenv='rmd $ENV_NAME .envrc; exit'

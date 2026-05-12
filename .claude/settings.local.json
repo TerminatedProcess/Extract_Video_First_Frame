@@ -1,0 +1,13 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(fish -c 'source .salias && run')",
+      "Bash(ffprobe:*)",
+      "Bash(ffmpeg:*)",
+      "Bash(python extract_frames.py:*)",
+      "Bash(ls:*)"
+    ],
+    "deny": [],
+    "ask": []
+  }
+}
