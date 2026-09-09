@@ -1,3 +1,10 @@
-opencv-python
-tqdm
-
+# No Python runtime dependencies — extract_frames.py is standard library only.
+#
+# The one external requirement is ffmpeg, which is a system package, not a pip
+# package:  sudo pacman -S ffmpeg
+#
+# Previous versions listed opencv-python (frame decoding) and tqdm (progress
+# bars). Both are gone: decoding moved to ffmpeg, which handles damaged and
+# oddly-encoded files that OpenCV silently fails on, and progress is now just
+# a line per file. Keeping this file so `uv pip install -r requirements.txt`
+# still works.
